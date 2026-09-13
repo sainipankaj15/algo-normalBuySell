@@ -11,3 +11,9 @@ var (
 	StartingMinutes int = 30
 	StartingSeconds int = 02
 )
+
+var (
+	ClosingHour    int = 9
+	ClosingMinutes int = 35
+	ClosingSeconds int = 02
+)

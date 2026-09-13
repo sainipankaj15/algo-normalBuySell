@@ -41,16 +41,19 @@ func main() {
 		return
 	}
 
-	log.Println("Both positions opened successfully. Waiting for 5 minutes before square off.")
+	log.Println("Both positions opened successfully. Waiting for the configured close time before square off.")
 	if err := utils.TelegramSend(BOTTOKEN, CHATID, "Positions opened: BUY HDFCBANK and SELL SBIN"); err != nil {
 		log.Printf("Telegram send failed: %v", err)
 	}
 
-	// Step 4 : After 5 minutes, square off both positions and close the algo
-	time.Sleep(5 * time.Minute)
+	isWorkDone := make(chan time.Time)
+	go utils.ApplicationClosing(ClosingHour, ClosingMinutes, ClosingSeconds, isWorkDone)
 
-	log.Println("5 minutes elapsed. Squaring off both positions.")
-	if err := utils.TelegramSend(BOTTOKEN, CHATID, "5 minutes elapsed. Squaring off both positions."); err != nil {
+	<-isWorkDone
+	close(isWorkDone)
+
+	log.Println("Configured close time reached. Squaring off both positions.")
+	if err := utils.TelegramSend(BOTTOKEN, CHATID, "Configured close time reached. Squaring off both positions."); err != nil {
 		log.Printf("Telegram send failed: %v", err)
 	}
 
