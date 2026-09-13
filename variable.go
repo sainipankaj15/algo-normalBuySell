@@ -3,6 +3,7 @@ package main
 import "time"
 
 var UserFyersID string = "XP03754"
+var ZerodhaUserID string = "FC8173"
 
 // ################ Long / Short Equity Strategy Details : Start #####################
 var LongSymbol string = "HDFCBANK"

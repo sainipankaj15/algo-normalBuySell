@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/markcheno/go-talib"
+	zerodha "github.com/sainipankaj15/All-In-One-Broker/Zerodha"
 )
 
 func roundToNearest15Minutes(t time.Time) time.Time {
@@ -42,44 +44,38 @@ func ema(px []float64, lookback int) float64 {
 }
 
 func placeMarketOrderForBuy(symbol string) error {
-	// Replace this placeholder with the actual Zerodha API call once the Zerodha package is available.
-	// Example:
-	// resp, err := zerodha.PlaceMarketOrder(
-	// 	zerodha.Exchange.NSE,
-	// 	symbol,
-	// 	"1",
-	// 	zerodha.OrderType.MARKET,
-	// 	zerodha.TransactionSide.BUY,
-	// 	zerodha.ProductType.INTRADAY,
-	// 	"FC8173",
-	// )
-	// if err != nil {
-	// 	return err
-	// }
-	// log.Println("Buy order placed successfully for", symbol, "Response:", resp)
+	resp, err := zerodha.PlaceMarketOrder(
+		zerodha.Exchange.NSE,
+		symbol,
+		strconv.Itoa(Quantity),
+		zerodha.OrderType.MARKET,
+		zerodha.TransactionSide.BUY,
+		zerodha.ProductType.INTRADAY,
+		ZerodhaUserID,
+	)
+	if err != nil {
+		return err
+	}
 
-	log.Printf("BUY placeholder executed for %s with quantity %d", symbol, Quantity)
+	log.Printf("BUY order placed successfully for %s with quantity %d. Response: %+v", symbol, Quantity, resp)
 	return nil
 }
 
 func placeMarketOrderForSell(symbol string) error {
-	// Replace this placeholder with the actual Zerodha API call once the Zerodha package is available.
-	// Example:
-	// resp, err := zerodha.PlaceMarketOrder(
-	// 	zerodha.Exchange.NSE,
-	// 	symbol,
-	// 	"1",
-	// 	zerodha.OrderType.MARKET,
-	// 	zerodha.TransactionSide.SELL,
-	// 	zerodha.ProductType.INTRADAY,
-	// 	"FC8173",
-	// )
-	// if err != nil {
-	// 	return err
-	// }
-	// log.Println("Sell order placed successfully for", symbol, "Response:", resp)
+	resp, err := zerodha.PlaceMarketOrder(
+		zerodha.Exchange.NSE,
+		symbol,
+		strconv.Itoa(Quantity),
+		zerodha.OrderType.MARKET,
+		zerodha.TransactionSide.SELL,
+		zerodha.ProductType.INTRADAY,
+		ZerodhaUserID,
+	)
+	if err != nil {
+		return err
+	}
 
-	log.Printf("SELL placeholder executed for %s with quantity %d", symbol, Quantity)
+	log.Printf("SELL order placed successfully for %s with quantity %d. Response: %+v", symbol, Quantity, resp)
 	return nil
 }
 
