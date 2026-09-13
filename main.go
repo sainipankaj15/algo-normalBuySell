@@ -21,6 +21,9 @@ func main() {
 	log.SetOutput(logFile)
 
 	log.Println("Starting algorithm:", AlgoName)
+	if err := utils.TelegramSend(BOTTOKEN, CHATID, "Algo started: "+AlgoName); err != nil {
+		log.Printf("Telegram send failed: %v", err)
+	}
 
 	// Step 2 : Wait for market start time
 	utils.ApplicationStart(StartingHour, StartingMinutes, StartingSeconds)
@@ -39,11 +42,17 @@ func main() {
 	}
 
 	log.Println("Both positions opened successfully. Waiting for 5 minutes before square off.")
+	if err := utils.TelegramSend(BOTTOKEN, CHATID, "Positions opened: BUY HDFCBANK and SELL SBIN"); err != nil {
+		log.Printf("Telegram send failed: %v", err)
+	}
 
 	// Step 4 : After 5 minutes, square off both positions and close the algo
 	time.Sleep(5 * time.Minute)
 
 	log.Println("5 minutes elapsed. Squaring off both positions.")
+	if err := utils.TelegramSend(BOTTOKEN, CHATID, "5 minutes elapsed. Squaring off both positions."); err != nil {
+		log.Printf("Telegram send failed: %v", err)
+	}
 
 	if err := squareOffPosition(LongSymbol); err != nil {
 		log.Printf("Failed to square off long position for %s: %v", LongSymbol, err)
@@ -54,4 +63,7 @@ func main() {
 	}
 
 	log.Println("Algo completed. Both positions squared off and the application is closing.")
+	if err := utils.TelegramSend(BOTTOKEN, CHATID, "Algo completed. Both positions squared off and application is closing."); err != nil {
+		log.Printf("Telegram send failed: %v", err)
+	}
 }
