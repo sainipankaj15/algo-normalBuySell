@@ -51,8 +51,6 @@ func squareOffPosition(symbol string) error {
 		side = zerodha.TransactionSide.SELL
 	case ShortSymbol:
 		side = zerodha.TransactionSide.BUY
-	default:
-		return logErrorAndReturn("unknown symbol provided for square-off: %s", symbol)
 	}
 
 	resp, err := zerodha.PlaceMarketOrder(
@@ -69,10 +67,5 @@ func squareOffPosition(symbol string) error {
 	}
 
 	log.Printf("Square-off executed for %s with side %s. Response: %+v", symbol, side, resp)
-	return nil
-}
-
-func logErrorAndReturn(format string, args ...interface{}) error {
-	log.Printf(format, args...)
 	return nil
 }
