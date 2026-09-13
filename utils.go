@@ -44,7 +44,35 @@ func placeMarketOrderForSell(symbol string) error {
 }
 
 func squareOffPosition(symbol string) error {
-	// Replace this placeholder with the real square-off / close-position API call for your broker.
-	log.Printf("Square-off placeholder executed for %s", symbol)
+	var side string
+
+	switch symbol {
+	case LongSymbol:
+		side = zerodha.TransactionSide.SELL
+	case ShortSymbol:
+		side = zerodha.TransactionSide.BUY
+	default:
+		return logErrorAndReturn("unknown symbol provided for square-off: %s", symbol)
+	}
+
+	resp, err := zerodha.PlaceMarketOrder(
+		zerodha.Exchange.NSE,
+		symbol,
+		strconv.Itoa(Quantity),
+		zerodha.OrderType.MARKET,
+		side,
+		zerodha.ProductType.INTRADAY,
+		ZerodhaUserID,
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Square-off executed for %s with side %s. Response: %+v", symbol, side, resp)
+	return nil
+}
+
+func logErrorAndReturn(format string, args ...interface{}) error {
+	log.Printf(format, args...)
 	return nil
 }
