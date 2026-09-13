@@ -4,8 +4,10 @@ import "time"
 
 var UserFyersID string = "XP03754"
 
-// ################ Target Symbol Specfic details : Start #####################
-var TargetSymbol string = "NSE:NIFTYBANK-INDEX"
+// ################ Long / Short Equity Strategy Details : Start #####################
+var LongSymbol string = "HDFCBANK"
+var ShortSymbol string = "SBIN"
+var Quantity int = 1
 var TargetSymbolExpiryDay time.Weekday = time.Wednesday
 var TargetSymbolToken int32 = 26009
 var TargetSymbolStrikeGap = 100
@@ -29,4 +31,3 @@ var (
 	ExitingAllMinutes int = 27
 	ExitingAllSeconds int = 01
 )
-

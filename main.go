@@ -8,12 +8,11 @@ import (
 	utils "github.com/sainipankaj15/All-In-One-Broker/commanUtilsAcrossBroker"
 )
 
-var AlgoName = "Algo_EmaAndRsi"
+var AlgoName = "Algo_LongShort_5Min"
 
 func main() {
-
 	// Step 1 : Setting the log file name
-	fileName := "Log_" + AlgoName + "_" + TargetSymbol + "_" + utils.CurrentDate() + "_" + utils.CurrentTime() + "_" + ".txt"
+	fileName := "Log_" + AlgoName + "_" + utils.CurrentDate() + "_" + utils.CurrentTime() + "_" + ".txt"
 	logFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal("Failed to open log file:", err)
@@ -21,47 +20,38 @@ func main() {
 	defer logFile.Close()
 	log.SetOutput(logFile)
 
-	// Step 2 : Setup your broker websocket if required
-	// if err := connectFyersWebSocket(); err != nil {
-	// 	log.Printf("Fyers websocket connection failed: %v", err)
-	// } else {
-	// 	log.Println("Fyers websocket connected")
-	// }
+	log.Println("Starting algorithm:", AlgoName)
 
-	// Step 3 : OptionChainMap fetch : Symbol Fetch :
-	// OptionChainMap, err = fyers.GetOptionChainMap_Fyers(TargetSymbol, 20, fyers.ADMIN_FYERS)
-	// if err != nil {
-	// 	log.Fatal("Error while getting the option chain map", err)
-	// }
-	// fyers.PrintOptionChainMap(OptionChainMap)
-
-	// Step 4 : Setup everything which you want to do before market start
-
-	// Step 5 : Everything is Ready Now, will wait for my application Starting
+	// Step 2 : Wait for market start time
 	utils.ApplicationStart(StartingHour, StartingMinutes, StartingSeconds)
 
-	// Step 6 : Now do everything which you want to do after market start Such as live LTP fetch, Algo logic etc
-	// go liveLTPGoRoutine()
+	// Step 3 : Place the long and short positions
+	log.Printf("Opening long position in %s and short position in %s", LongSymbol, ShortSymbol)
 
-	// Step 9 : Main logic of Algo
-	//go algo()
+	if err := placeMarketOrderForBuy(LongSymbol); err != nil {
+		log.Printf("Failed to place buy order for %s: %v", LongSymbol, err)
+		return
+	}
 
-	// Step 6 : Create a channel for tracking when to close this program(Main Program)
-	isWorkDone := make(chan time.Time)
-	go utils.ApplicationClosing(ClosingHour, ClosingMinutes, ClosingSeconds, isWorkDone)
+	if err := placeMarketOrderForSell(ShortSymbol); err != nil {
+		log.Printf("Failed to place sell order for %s: %v", ShortSymbol, err)
+		return
+	}
 
-	// Step 11 : Holding there to close the program
-	<-isWorkDone
-	close(isWorkDone)
+	log.Println("Both positions opened successfully. Waiting for 5 minutes before square off.")
 
-	// Step 10 : Function who will close all open position before closing : In case if Target and SL not hits
-	//exitAllPoistionAtClosing()
+	// Step 4 : After 5 minutes, square off both positions and close the algo
+	time.Sleep(5 * time.Minute)
 
-	// Step 12 : Do the Stuff which you want to do before closing the application such as closing the redis connection, closing the broker websocket connection etc
+	log.Println("5 minutes elapsed. Squaring off both positions.")
 
-}
+	if err := squareOffPosition(LongSymbol); err != nil {
+		log.Printf("Failed to square off long position for %s: %v", LongSymbol, err)
+	}
 
-func init() {
+	if err := squareOffPosition(ShortSymbol); err != nil {
+		log.Printf("Failed to square off short position for %s: %v", ShortSymbol, err)
+	}
 
-	// Do whatever you want to do before main function such as redis connection, Loading Env variable etc
+	log.Println("Algo completed. Both positions squared off and the application is closing.")
 }
