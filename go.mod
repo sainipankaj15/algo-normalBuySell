@@ -1,4 +1,4 @@
-module Algo_BoilerPlate
+module Algo_NormalBuySell
 
 go 1.22.0
 

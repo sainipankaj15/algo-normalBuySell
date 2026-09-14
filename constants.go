@@ -1,6 +1,6 @@
 package main
 
 // Telegram credentials
-const BOTTOKEN string = "Your_Telegram_Bot_Token_Here"
-const CHATID string = "@Your_Telegram_Chat_ID_Here"
+const BOTTOKEN string = "8845175863:AAFF9K-N-uaK23JaJFz9SVip2YgZvzlt6Gw"
+const CHATID string = "@algotracker"
 const ENVFILE string = "your.env"
